@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect } from "react";
 import { FaGift } from "react-icons/fa6";
-import gsap from "gsap";
 import { Fireworks } from "@fireworks-js/react";
 import ParticleEngine from "@/components/ParticleEngine.jsx";
 
@@ -12,27 +11,10 @@ export default function Home() {
   const [showSurprise, setShowSurprise] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [showFireworks, setShowFireworks] = useState(false);
-  const particleEngine = useRef(null);
-  useEffect(() => {
-    const canvas = document.getElementById("fireworkCanvas");
-
-    if (!canvas) return;
-
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-
-    window.addEventListener("resize", resize);
-
-    return () => window.removeEventListener("resize", resize);
-  }, []);
+  const particleEngine = useRef<any>(null);
 
   const canClick = useRef(true);
-  const lastText = useRef(null);
+  const lastText = useRef<string | null>(null);
   const texts = [
     "Happy Birthday!",
     "I Love You!",
@@ -43,178 +25,8 @@ export default function Home() {
     "Wish You The Best!",
   ];
 
-  const explode = (x, y) => {
-    const canvas = document.getElementById("fireworkCanvas");
-
-    if (!canvas) return;
-
-    const ctx = canvas.getContext("2d");
-
-    const particles = [];
-
-    const colors = [
-      "#ff4040",
-      "#ffd93d",
-      "#40ff7c",
-      "#40bfff",
-      "#ff66ff",
-      "#ffffff",
-    ];
-
-    for (let i = 0; i < 150; i++) {
-      const angle = (Math.PI * 2 * i) / 150;
-
-      particles.push({
-        x,
-        y,
-        vx: Math.cos(angle) * gsap.utils.random(4, 8),
-        vy: Math.sin(angle) * gsap.utils.random(4, 8),
-        alpha: 1,
-        radius: gsap.utils.random(2, 4),
-        color: colors[Math.floor(Math.random() * colors.length)],
-      });
-    }
-
-    function animate() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      particles.forEach((p) => {
-        p.x += p.vx;
-        p.y += p.vy;
-
-        p.vx *= 0.985;
-        p.vy *= 0.985;
-
-        p.vx *= 0.992;
-        p.vy *= 0.992;
-
-        p.vy += 0.04;
-
-        p.alpha -= 0.01;
-
-        ctx.globalAlpha = Math.max(p.alpha, 0);
-
-        ctx.strokeStyle = p.color;
-        ctx.globalAlpha = p.alpha * 0.5;
-        ctx.lineWidth = 2;
-
-        ctx.beginPath();
-        ctx.moveTo(p.x, p.y);
-        ctx.lineTo(p.x - p.vx * 4, p.y - p.vy * 4);
-        ctx.stroke();
-
-        ctx.beginPath();
-        ctx.fillStyle = p.color;
-        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        ctx.shadowBlur = 5;
-        ctx.shadowColor = p.color;
-
-        ctx.fill();
-
-        if (Math.random() < 0.15) {
-          ctx.beginPath();
-          ctx.fillStyle = "#ffffff";
-          ctx.arc(
-            p.x + gsap.utils.random(-3, 3),
-            p.y + gsap.utils.random(-3, 3),
-            1,
-            0,
-            Math.PI * 2,
-          );
-          ctx.fill();
-        }
-
-        ctx.shadowBlur = 0;
-      });
-
-      ctx.globalAlpha = 1;
-
-      if (particles.some((p) => p.alpha > 0)) {
-        requestAnimationFrame(animate);
-      }
-    }
-
-    animate();
-  };
-
-  const explodeName = (centerX, centerY) => {
-    const name = "YOUR NAME"; // Change to birthday person's name
-
-    // Hidden canvas
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
-
-    canvas.width = 700;
-    canvas.height = 200;
-
-    ctx.fillStyle = "white";
-    ctx.font = "bold 110px Arial";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText(name, canvas.width / 2, canvas.height / 2);
-
-    const image = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-
-    const particles = [];
-
-    // Every 5 pixels keeps it dotted like the reference
-    for (let y = 0; y < canvas.height; y += 5) {
-      for (let x = 0; x < canvas.width; x += 5) {
-        const alpha = image[(y * canvas.width + x) * 4 + 3];
-
-        if (alpha > 128) {
-          particles.push({
-            x,
-            y,
-          });
-        }
-      }
-    }
-
-    const offsetX = canvas.width / 2;
-    const offsetY = canvas.height / 2;
-
-    particles.forEach((p) => {
-      const dot = document.createElement("div");
-
-      dot.className =
-        "fixed w-[2px] h-[2px] rounded-full bg-white pointer-events-none";
-
-      // Spawn every particle at the explosion center
-      dot.style.left = `${centerX}px`;
-      dot.style.top = `${centerY}px`;
-
-      document.body.appendChild(dot);
-
-      const spread = 180;
-
-      gsap.set(dot, {
-        x: gsap.utils.random(-spread, spread),
-        y: gsap.utils.random(-spread, spread),
-        scale: gsap.utils.random(0.2, 2),
-        opacity: 0,
-      });
-
-      // Gather into the text
-      gsap.to(dot, {
-        x: (p.x - offsetX) * 0.5,
-        y: (p.y - offsetY) * 0.5,
-        scale: 1,
-        opacity: 1,
-        duration: 1.2,
-        ease: "expo.out",
-      });
-
-      // Fade out afterwards
-      gsap.to(dot, {
-        opacity: 0,
-        duration: 0.6,
-        delay: 2,
-        onComplete: () => dot.remove(),
-      });
-    });
-  };
-
+  
+  
   const launchIntroFirework = () => {
     particleEngine.current?.launchRocket();
 
@@ -223,7 +35,7 @@ export default function Home() {
     }, 2200);
   };
 
-  const bgClick = (e) => {
+  const bgClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!canClick.current) return;
 
     canClick.current = false;
