@@ -38,7 +38,7 @@ const ParticleEngine = forwardRef((props, ref) => {
     canvas.height = isMobile ? 180 : 250;
 
     ctx.fillStyle = "white";
-    ctx.font = isMobile ? "bold 90px Arial" : "bold 120px Arial";
+    ctx.font = isMobile ? "bold 100px Arial" : "bold 120px Arial";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
 
