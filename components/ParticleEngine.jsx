@@ -133,33 +133,40 @@ const ParticleEngine = forwardRef((props, ref) => {
     rockets.current.push({
       x: window.innerWidth / 2,
       y: window.innerHeight,
-      vx: 0,
-      vy: window.innerWidth < 768 ? -8 : -10,
-      life: 100,
+      age: 0,
+      dead: false,
     });
   }
 
   function updateRockets() {
     rockets.current.forEach((r) => {
-      r.x += r.vx;
-      r.y += r.vy;
+      r.age++;
 
-      r.vy += 0.05;
+      // Total animation frames
+      const duration = 240;
+
+      const t = Math.min(r.age / duration, 1);
+
+      // Ease Out Cubic
+      const eased = Math.pow(t, 1.8);
+
+      const startY = window.innerHeight;
+      const endY = window.innerHeight * 0.22;
+
+      r.y = startY + (endY - startY) * eased;
 
       createTrail(r.x, r.y);
 
-      r.life--;
-
-      if (r.life <= 0) {
+      if (t >= 1) {
         explode(r.x, r.y);
 
-        setTimeout(() => {
-          explodeName(r.x, r.y, "YOUR NAME");
-        }, 250);
+        explodeName(r.x, r.y, "YOUR NAME");
+
+        r.dead = true;
       }
     });
 
-    rockets.current = rockets.current.filter((r) => r.life > 0);
+    rockets.current = rockets.current.filter((r) => !r.dead);
   }
 
   //--------------------------------------------------------
@@ -218,8 +225,11 @@ const ParticleEngine = forwardRef((props, ref) => {
 
           p.lifeTime = (p.lifeTime || 0) + 1;
 
-          if (p.lifeTime > 45) {
-            p.alpha -= 0.05;
+          const fadeDelay = p.fadeDelay ?? 150;
+          const fadeSpeed = p.fadeSpeed ?? 0.02;
+
+          if (p.lifeTime > fadeDelay) {
+            p.alpha -= fadeSpeed;
           }
         }
       } else {
@@ -295,12 +305,14 @@ const ParticleEngine = forwardRef((props, ref) => {
 
   function drawRockets(ctx) {
     rockets.current.forEach((r) => {
+      const pulse = 3 + Math.sin(performance.now() * 0.02) * 0.8;
+
       ctx.beginPath();
       ctx.fillStyle = "white";
       ctx.shadowBlur = 20;
       ctx.shadowColor = "white";
 
-      ctx.arc(r.x, r.y, 3, 0, Math.PI * 2);
+      ctx.arc(r.x, r.y, pulse, 0, Math.PI * 2);
 
       ctx.fill();
 
@@ -425,6 +437,8 @@ const ParticleEngine = forwardRef((props, ref) => {
       p.drag = 0.92;
       p.gravity = 0;
       p.alpha = 1;
+      p.fadeDelay = 85; // stay longer
+      p.fadeSpeed = 0.05; // slow fade
     });
   }
 
@@ -467,6 +481,8 @@ const ParticleEngine = forwardRef((props, ref) => {
       p.drag = 0.96;
       p.gravity = 0;
       p.alpha = 1;
+      p.fadeDelay = 15; // start fading after 30 frames
+      p.fadeSpeed = 0.06; // fade much faster
     });
   }
 

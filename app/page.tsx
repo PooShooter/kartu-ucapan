@@ -32,7 +32,7 @@ export default function Home() {
 
     setTimeout(() => {
       setShowFireworks(true);
-    }, 2200);
+    }, 4500);
   };
 
   const bgClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -65,12 +65,13 @@ export default function Home() {
     setTimeout(() => {
       setShowCard(false);
 
+      
       launchIntroFirework();
 
       // Show the button later
       setTimeout(() => {
         setShowSurprise(true);
-      }, 5000);
+      }, 7000);
     }, 500);
   };
 
@@ -105,7 +106,7 @@ export default function Home() {
         id="fireworkCanvas"
         className="fixed inset-0 w-full h-full pointer-events-none z-10"
       />
-      <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 py-12 md:px-24 gap-5">
+      <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 md:px-24 gap-5">
         {showCard && (
           <div
             id="card"
@@ -113,7 +114,7 @@ export default function Home() {
               isFading ? "opacity-0 scale-95" : "opacity-100 scale-100"
             }`}
           >
-            <h1 className="animate-pulse text-center text-3xl md:text-5xl font-bold text-[#00ffc0] drop-shadow-[0_0_15px_rgba(0,255,192,.8)]">
+            <h1 className="animate-pulse text-center text-5xl md:text-7xl font-bold text-[#00ffc0] drop-shadow-[0_0_15px_rgba(0,255,192,.8)]">
               Happy Birthday!
             </h1>
 
@@ -128,7 +129,7 @@ export default function Home() {
           </div>
         )}
         {showSurprise && !showPopup && (
-          <div className="mt-auto pb-10">
+          <div className="mt-auto pb-20">
             <button
               onClick={() => setShowPopup(true)}
               className="text-white border-2 border-white rounded-3xl bg-white/25 hover:cursor-pointer hover:bg-white hover:text-black hover:drop-shadow-[0_0_15px_rgba(255,255,255)] px-6 py-3"
