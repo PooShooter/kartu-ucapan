@@ -78,7 +78,7 @@ export default function Home() {
   return (
     <div
       onClick={showSurprise ? bgClick : undefined}
-      className="min-h-screen overflow-hidden bg-black"
+      className="min-h-dvh overflow-hidden bg-black"
     >
       <ParticleEngine ref={particleEngine} />
       {showFireworks && (
@@ -106,7 +106,7 @@ export default function Home() {
         id="fireworkCanvas"
         className="fixed inset-0 w-full h-full pointer-events-none z-10"
       />
-      <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 md:px-24 gap-5">
+      <div className="relative z-10 flex min-h-dvh flex-col items-center justify-center px-6 md:px-24 gap-5">
         {showCard && (
           <div
             id="card"
@@ -129,7 +129,7 @@ export default function Home() {
           </div>
         )}
         {showSurprise && !showPopup && (
-          <div className="mt-auto pb-20">
+          <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-20">
             <button
               onClick={() => setShowPopup(true)}
               className="text-white border-2 border-white rounded-3xl bg-white/25 hover:cursor-pointer hover:bg-white hover:text-black hover:drop-shadow-[0_0_15px_rgba(255,255,255)] px-6 py-3"
@@ -141,7 +141,7 @@ export default function Home() {
       </div>
       {showPopup && (
         <div className="fixed inset-0 overflow-y-auto bg-black/60 backdrop-blur-sm z-50">
-          <div className="min-h-screen flex justify-center items-center px-4 py-4">
+          <div className="min-h-dvh flex justify-center items-center px-4 py-4">
             <div className="flex flex-col lg:flex-row items-center gap-6 w-full">
               <div className="flex flex-col lg:w-1/3 w-full">
                 <div className="flex flex-col justify-center items-center gap-8 lg:gap-16">

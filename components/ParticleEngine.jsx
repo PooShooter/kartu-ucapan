@@ -105,11 +105,16 @@ const ParticleEngine = forwardRef((props, ref) => {
 
     let animationId;
 
-    const animate = () => {
+    let lastTime = performance.now();
+
+    const animate = (now) => {
+      const delta = Math.min((now - lastTime) / 16.67, 2);
+      lastTime = now;
+
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      updateRockets();
-      updateParticles();
+      updateRockets(delta);
+      updateParticles(delta);
 
       drawRockets(ctx);
       drawParticles(ctx);
@@ -117,7 +122,7 @@ const ParticleEngine = forwardRef((props, ref) => {
       animationId = requestAnimationFrame(animate);
     };
 
-    animate();
+    animationId = requestAnimationFrame(animate);
 
     return () => {
       cancelAnimationFrame(animationId);
@@ -138,9 +143,9 @@ const ParticleEngine = forwardRef((props, ref) => {
     });
   }
 
-  function updateRockets() {
+  function updateRockets(delta) {
     rockets.current.forEach((r) => {
-      r.age++;
+      r.age += delta;
 
       // Total animation frames
       const duration = 240;
@@ -186,7 +191,7 @@ const ParticleEngine = forwardRef((props, ref) => {
     });
   }
 
-  function updateParticles() {
+  function updateParticles(delta) {
     particles.current.forEach((p) => {
       if (!p.isText) {
         p.trail.push({
@@ -200,20 +205,24 @@ const ParticleEngine = forwardRef((props, ref) => {
       }
 
       if (p.isText) {
-        p.x += (p.targetX - p.x) * 0.18;
-        p.y += (p.targetY - p.y) * 0.18;
+        const follow = 0.18 * delta;
+
+        p.x += (p.targetX - p.x) * follow;
+        p.y += (p.targetY - p.y) * follow;
 
         p.vx = 0;
         p.vy = 0;
       }
 
-      p.x += p.vx;
-      p.y += p.vy;
+      p.x += p.vx * delta;
+      p.y += p.vy * delta;
 
-      p.vx *= p.drag ?? 0.985;
-      p.vy *= p.drag ?? 0.985;
+      const drag = Math.pow(p.drag ?? 0.985, delta);
 
-      p.vy += p.gravity ?? 0.03;
+      p.vx *= drag;
+      p.vy *= drag;
+
+      p.vy += (p.gravity ?? 0.03) * delta;
 
       if (p.isText) {
         const dx = p.targetX - p.x;
@@ -223,17 +232,17 @@ const ParticleEngine = forwardRef((props, ref) => {
           p.vx *= 0.8;
           p.vy *= 0.8;
 
-          p.lifeTime = (p.lifeTime || 0) + 1;
+          p.lifeTime = (p.lifeTime || 0) + delta;
 
           const fadeDelay = p.fadeDelay ?? 150;
           const fadeSpeed = p.fadeSpeed ?? 0.02;
 
           if (p.lifeTime > fadeDelay) {
-            p.alpha -= fadeSpeed;
+            p.alpha -= fadeSpeed * delta;
           }
         }
       } else {
-        p.alpha -= 0.008;
+        p.alpha -= 0.008 * delta;
       }
     });
 
