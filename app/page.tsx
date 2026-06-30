@@ -120,7 +120,7 @@ export default function Home() {
 
             <FaGift
               onClick={handleClick}
-              className="animate-bounce text-5xl md:text-7xl text-[#eeff00] drop-shadow-[0_0_15px_rgba(255,255,0,0.8)] mt-4 hover:cursor-pointer hover:text-7xl duration-300"
+              className="animate-bounce text-5xl md:text-7xl text-[#eeff00] drop-shadow-[0_0_15px_rgba(255,255,0,0.8)] mt-4 hover:cursor-pointer active:text-6xl md:hover:text-8xl duration-300"
             />
 
             <p className="mt-4 text-center text-sm md:text-lg font-semibold">
@@ -132,7 +132,7 @@ export default function Home() {
           <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-20">
             <button
               onClick={() => setShowPopup(true)}
-              className="text-white border-2 border-white rounded-3xl bg-white/25 hover:cursor-pointer hover:bg-white hover:text-black hover:drop-shadow-[0_0_15px_rgba(255,255,255)] px-6 py-3"
+              className="text-white border-2 border-white rounded-3xl bg-white/25 hover:cursor-pointer active:bg-white md:hover:bg-white active:text-black md:hover:text-black active:drop-shadow-[0_0_15px_rgba(255,255,255)] md:hover:drop-shadow-[0_0_15px_rgba(255,255,255)] px-6 py-3"
             >
               Show Special Message ✨
             </button>
@@ -197,7 +197,7 @@ max-w-3xl
                 </div>
                 <button
                   onClick={handleClose}
-                  className="w-full text-gray-300 font-semibold underline mt-10 hover:text-gray-400 hover:font-bold hover:cursor-pointer"
+                  className="w-full text-gray-300 font-semibold underline mt-10 hover:cursor-pointer active:text-gray-400 md:hover:text-gray-400 active:font-bold md:hover:font-bold"
                 >
                   Start Again
                 </button>
