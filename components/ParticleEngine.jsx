@@ -32,11 +32,13 @@ const ParticleEngine = forwardRef((props, ref) => {
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
 
-    canvas.width = 1400;
-    canvas.height = 250;
+    const isMobile = window.innerWidth < 768;
+
+    canvas.width = isMobile ? 800 : 1400;
+    canvas.height = isMobile ? 180 : 250;
 
     ctx.fillStyle = "white";
-    ctx.font = "bold 120px Arial";
+    ctx.font = isMobile ? "bold 90px Arial" : "bold 120px Arial";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
 
@@ -132,7 +134,7 @@ const ParticleEngine = forwardRef((props, ref) => {
       x: window.innerWidth / 2,
       y: window.innerHeight,
       vx: 0,
-      vy: -10,
+      vy: window.innerWidth < 768 ? -8 : -10,
       life: 100,
     });
   }
@@ -341,7 +343,11 @@ const ParticleEngine = forwardRef((props, ref) => {
     for (let i = 0; i < count; i++) {
       const angle = Math.random() * Math.PI * 2;
 
-      const speed = Math.random() * 8 + 5;
+      const isMobile = window.innerWidth < 768;
+
+      const speed = isMobile
+        ? Math.random() * 5 + 3 // 3–8
+        : Math.random() * 8 + 5; // 5–13
 
       const color = colors[Math.floor(Math.random() * colors.length)];
 
